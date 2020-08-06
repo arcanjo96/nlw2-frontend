@@ -3,33 +3,57 @@ import React from 'react';
 import './styles.css';
 
 import whatsappIcon from '../../assets/images/icons/whatsapp.svg';
+import api from '../../services/api';
 
-function TeacherItem() {
+
+export interface Teacher {
+    id: number;
+    avatar: string;
+    bio: string;
+    cost: number;
+    name: string;
+    subject: string;
+    whatsapp: string;
+}
+interface TeacherItemProps {
+    teacher: Teacher;
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher }) => {
+
+    function createNewConnection() {
+        api.post('connections', {
+            user_id: teacher.id
+        });
+    }
+
     return (
         <article className="teacher-item">
             <header>
-                <img src="https://avatars1.githubusercontent.com/u/22194984?s=400&u=12ca105ecfe044e8a7b461ab4dd1e07ce51e6f7c&v=4" alt="Teacher" />
+                <img src={teacher.avatar} alt={teacher.name} />
                 <div>
-                    <strong>Lucas</strong>
-                    <span>Matemática</span>
+                    <strong>{teacher.name}</strong>
+                    <span>{teacher.subject}</span>
                 </div>
             </header>
 
             <p>
-                Entusiasta dos melhores métodos de ensino.
-            <br /> <br />
-            Apaixonado por matemática e por mudar a vida das pessoas através da matemática.
-        </p>
+                {teacher.bio}
+            </p>
 
             <footer>
                 <p>
                     Preço/hora
-                <strong>R$ 80,00</strong>
+                    <strong>R$ {teacher.cost}</strong>
                 </p>
-                <button type="button">
+                <a
+                    target="_blank"
+                    onClick={createNewConnection}
+                    href={`https://wa.me/${teacher.whatsapp}`}
+                >
                     <img src={whatsappIcon} alt="Contato" />
                 Entrar em contato
-            </button>
+                </a>
             </footer>
         </article>
     );
